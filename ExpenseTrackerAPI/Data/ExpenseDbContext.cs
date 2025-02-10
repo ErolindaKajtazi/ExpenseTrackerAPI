@@ -11,6 +11,8 @@ public class ExpenseDbContext : DbContext
 
     public DbSet<Expense> Expenses { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<Settings> Settings { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,5 +23,10 @@ public class ExpenseDbContext : DbContext
 
         // unique category names
         modelBuilder.Entity<Category>().HasIndex(c => c.Name).IsUnique();
+        
+        // Seed default OverallBudget if not present
+        modelBuilder.Entity<Settings>().HasData(
+            new Settings{ Id = 1, OverallBudget = 1000.00m }
+        );
     }
 }
