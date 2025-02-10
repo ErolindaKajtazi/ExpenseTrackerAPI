@@ -27,10 +27,10 @@ public class ExpensesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ExpenseDto>>> GetExpenses()
     {
-        // Fetch the expenses from the database and include the associated categories
+        // Fetch the expenses from the database
         var expenses = await _context.Expenses.Include(e => e.Category).ToListAsync();
 
-        // Use AutoMapper to map the list of Expense objects to a list of ExpenseDto
+        // Use AutoMapper
         var expensesDto = _mapper.Map<List<ExpenseDto>>(expenses);
 
         return Ok(expensesDto);
@@ -45,10 +45,10 @@ public class ExpensesController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        // Map ExpenseDto to Expense using AutoMapper
+        
         var expense = _mapper.Map<Expense>(expenseDto);
 
-        // Find the category by Id
+        
         var category = await _context.Categories.FindAsync(expense.CategoryId);
         if (category == null)
         {
@@ -57,7 +57,6 @@ public class ExpensesController : ControllerBase
 
         expense.Category = category;
 
-        // Check if the category budget is exceeded
         var totalCategoryAmount = await _context.Expenses
             .Where(e => e.CategoryId == expense.CategoryId)
             .SumAsync(e => e.Amount);
@@ -80,14 +79,14 @@ public class ExpensesController : ControllerBase
             return BadRequest("Overall budget exceeded.");
         }
 
-        // Save the expense to the database
+        
         _context.Expenses.Add(expense);
         await _context.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetExpense), new { id = expense.Id }, expense);
     }
 
-    // GET: api/Expenses/5
+    // GET
     [HttpGet("{id}")]
     public async Task<ActionResult<ExpenseDto>> GetExpense(int id)
     {
@@ -101,7 +100,7 @@ public class ExpensesController : ControllerBase
         return Ok(_mapper.Map<ExpenseDto>(expense));
     }
 
-    // PUT: api/Expenses/5
+    // PUT:
     [HttpPut("{id}")]
     public async Task<IActionResult> PutExpense(int id, ExpenseDto expenseDto)
     {
@@ -118,7 +117,7 @@ public class ExpensesController : ControllerBase
         return NoContent();
     }
 
-    // DELETE: api/Expenses/5
+    // DELETE
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteExpense(int id)
     {
@@ -148,7 +147,7 @@ public class ExpensesController : ControllerBase
         return Ok(expense);
     }
 
-    // GET: api/Expenses/least-expensive
+    // GET
     [HttpGet("least-expensive")]
     public async Task<ActionResult<Expense>> GetLeastExpensiveExpense()
     {
@@ -160,7 +159,7 @@ public class ExpensesController : ControllerBase
         return Ok(expense);
     }
 
-    // GET: api/Expenses/average-daily
+    // GET
     [HttpGet("average-daily")]
     public async Task<ActionResult<decimal>> GetAverageDailyExpenses()
     {
@@ -168,7 +167,7 @@ public class ExpensesController : ControllerBase
         return Ok(avgDaily);
     }
 
-    // GET: api/Expenses/average-monthly
+    // GET
     [HttpGet("average-monthly")]
     public async Task<ActionResult<decimal>> GetAverageMonthlyExpenses()
     {
@@ -176,7 +175,7 @@ public class ExpensesController : ControllerBase
         return Ok(avgMonthly);
     }
 
-    // GET: api/Expenses/average-yearly
+    // GET
     [HttpGet("average-yearly")]
     public async Task<ActionResult<decimal>> GetAverageYearlyExpenses()
     {
@@ -184,7 +183,7 @@ public class ExpensesController : ControllerBase
         return Ok(avgYearly);
     }
 
-    // GET: api/Expenses/total-expenses
+    // GET
     [HttpGet("total-expenses")]
     public async Task<ActionResult<decimal>> GetTotalExpenses()
     {

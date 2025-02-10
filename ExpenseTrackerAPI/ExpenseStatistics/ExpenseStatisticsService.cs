@@ -13,7 +13,7 @@ public class ExpenseStatisticsService
         _context = context;
     }
 
-    // Most expensive expense
+    // Most expensive
     public async Task<Expense> GetMostExpensiveExpenseAsync()
     {
         return await _context.Expenses
@@ -21,7 +21,7 @@ public class ExpenseStatisticsService
             .FirstOrDefaultAsync();
     }
 
-    // Least expensive expense
+    // Least
     public async Task<Expense> GetLeastExpensiveExpenseAsync()
     {
         return await _context.Expenses
@@ -29,31 +29,43 @@ public class ExpenseStatisticsService
             .FirstOrDefaultAsync();
     }
 
-    // Average daily expenses
     public async Task<decimal> GetAverageDailyExpensesAsync()
     {
-        var totalDays = (DateTime.Now - _context.Expenses.Min(e => e.Date)).Days;
+        var firstExpense = await _context.Expenses.OrderBy(e => e.Date).FirstOrDefaultAsync();
+    
+        if (firstExpense == null) return 0; // No expenses exist
+
+        var totalDays = Math.Max(1, (DateTime.Now - firstExpense.Date).Days);
         var totalExpenses = await _context.Expenses.SumAsync(e => e.Amount);
-        return totalDays > 0 ? totalExpenses / totalDays : 0;
+
+        return totalExpenses / totalDays;
     }
 
-    // Average monthly expenses
     public async Task<decimal> GetAverageMonthlyExpensesAsync()
     {
-        var totalMonths = (DateTime.Now.Year - _context.Expenses.Min(e => e.Date).Year) * 12 + DateTime.Now.Month - _context.Expenses.Min(e => e.Date).Month;
+        var firstExpense = await _context.Expenses.OrderBy(e => e.Date).FirstOrDefaultAsync();
+    
+        if (firstExpense == null) return 0;
+
+        var totalMonths = Math.Max(1, (DateTime.Now.Year - firstExpense.Date.Year) * 12 + (DateTime.Now.Month - firstExpense.Date.Month));
         var totalExpenses = await _context.Expenses.SumAsync(e => e.Amount);
-        return totalMonths > 0 ? totalExpenses / totalMonths : 0;
+
+        return totalExpenses / totalMonths;
     }
 
-    // Average yearly expenses
     public async Task<decimal> GetAverageYearlyExpensesAsync()
     {
-        var totalYears = DateTime.Now.Year - _context.Expenses.Min(e => e.Date).Year;
+        var firstExpense = await _context.Expenses.OrderBy(e => e.Date).FirstOrDefaultAsync();
+    
+        if (firstExpense == null) return 0;
+
+        var totalYears = Math.Max(1, DateTime.Now.Year - firstExpense.Date.Year);
         var totalExpenses = await _context.Expenses.SumAsync(e => e.Amount);
-        return totalYears > 0 ? totalExpenses / totalYears : 0;
+
+        return totalExpenses / totalYears;
     }
 
-    // Total expenses
+    
     public async Task<decimal> GetTotalExpensesAsync()
     {
         return await _context.Expenses.SumAsync(e => e.Amount);

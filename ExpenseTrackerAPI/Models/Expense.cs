@@ -16,7 +16,7 @@ public class Expense
 
     [Required] public DateTime Date { get; set; }
 
-    // Foreign Key (Ensures every expense is linked to a category)
+    // Foreign Key
     [Required] public int CategoryId { get; set; }
 
     [JsonIgnore]

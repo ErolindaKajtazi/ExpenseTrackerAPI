@@ -27,13 +27,13 @@ public class CategoriesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Category>> PostCategory(Category category)
     {
-        // Basic validation on category name (length or other business rules)
+        // Basic validation
         if (string.IsNullOrWhiteSpace(category.Name))
         {
             return BadRequest("Category name is required.");
         }
 
-        // Check if category name already exists
+        
         var existingCategory = await _context.Categories
             .FirstOrDefaultAsync(c => c.Name == category.Name);
 
@@ -42,7 +42,7 @@ public class CategoriesController : ControllerBase
             return BadRequest("Category with this name already exists.");
         }
 
-        // Add the new category
+        // Add
         _context.Categories.Add(category);
         await _context.SaveChangesAsync();
 

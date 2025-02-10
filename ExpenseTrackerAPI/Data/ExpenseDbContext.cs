@@ -21,10 +21,10 @@ public class ExpenseDbContext : DbContext
             .WithMany(c => c.Expenses).HasForeignKey(e => e.CategoryId)
             .OnDelete(DeleteBehavior.Cascade); // if category is deleted then all its related expenses are also deleted
 
-        // unique category names
+        
         modelBuilder.Entity<Category>().HasIndex(c => c.Name).IsUnique();
         
-        // Seed default OverallBudget if not present
+        //default OverallBudget
         modelBuilder.Entity<Settings>().HasData(
             new Settings{ Id = 1, OverallBudget = 1000.00m }
         );

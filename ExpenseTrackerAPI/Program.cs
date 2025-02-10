@@ -22,11 +22,6 @@ builder.Services.AddSwaggerGen(c =>
         Title = "Expense Tracker API",
         Version = "v1",
         Description = "An API for tracking personal expenses and budgets.",
-        Contact = new OpenApiContact
-        {
-            Name = "Erolinda",
-            Email = "erolindakajtazi@gmail.com"
-        }
     });
 });
 
@@ -41,11 +36,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Expense Tracker API v1");
-        c.RoutePrefix = string.Empty; // Makes Swagger available at the root URL "/"
+        c.RoutePrefix = string.Empty;
     });
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
